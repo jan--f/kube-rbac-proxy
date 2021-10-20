@@ -37,6 +37,10 @@ func initTransport(upstreamCAFile string) (http.RoundTripper, error) {
 		return nil, fmt.Errorf("error reading upstream CA file: %v", err)
 	}
 
+	if len(rootPEM) == 0 {
+		return nil, errors.New("upstream CA file is present but empty")
+	}
+
 	roots := x509.NewCertPool()
 	if ok := roots.AppendCertsFromPEM([]byte(rootPEM)); !ok {
 		return nil, errors.New("error parsing upstream CA certificate")
